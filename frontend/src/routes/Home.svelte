@@ -55,6 +55,8 @@
   {/each}
 </ul>
 
+  <p><a use:link href="/question-post" class="btn btn-primary">질문 등록하기</a></p>
+
   <p>
     Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
   </p>
