@@ -24,3 +24,15 @@ async def question_all(question_service: QuestionService = Depends(get_question_
             detail="등록된 게시물이 없습니다."
         )
     return questions
+
+
+@router.get("/detail/{question_id}")
+async def get_question(question_id: int,
+                      question_service: QuestionService = Depends(get_question_service)):
+    question = await question_service.get_question(question_id)
+    if question is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="해당 게시글을 찾을 수 없습니다."
+        )
+    return question

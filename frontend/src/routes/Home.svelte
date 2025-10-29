@@ -4,6 +4,7 @@
   import Counter from '../lib/Counter.svelte'
 
   import fastapi from "../lib/api"
+  import { link } from 'svelte-spa-router'
 
   let question_list = []
  /*
@@ -49,7 +50,7 @@
   <br>
   <ul>
   {#each question_list as question}
-    <li>{question.subject}</li>
+    <li><a use:link href="/detail/{question.id}">{question.subject}</a></li>
     <li>{question.content}</li>
   {/each}
 </ul>

@@ -51,7 +51,8 @@ const fastapi = (operation, url, params, success_callback, failure_callback) => 
                         if (failure_callback) {
                             failure_callback(json);
                         }else {
-                            alert(JSON.stringify(json));
+                            alert(json.detail);
+                            // alert(JSON.stringify(json));
                         }
                     }
                 })

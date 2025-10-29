@@ -26,5 +26,11 @@ class QuestionService:
         created_desc_questions = result.scalars().all()
         return created_desc_questions
 
+    async def get_question(self, question_id: int):
+        query = (select(Question).where(Question.id == question_id))
+        result = await self.db.execute(query)
+        question = result.scalar_one_or_none()
+        return question
+
 def get_question_service(db: AsyncSession = Depends(get_db)) -> 'QuestionService':
     return QuestionService(db)
