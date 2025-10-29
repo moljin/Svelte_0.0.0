@@ -1,0 +1,14 @@
+{
+  "esversion": 11,
+  "module": true,
+  "browser": true,
+  "sub": true,
+  "undef": true,
+
+  "globals": {
+    "alert": true,
+    "fetch": true,
+    "URLSearchParams": true
+
+  }
+}
