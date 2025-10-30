@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.models.qua import Question
+from app.models.user import User
 from app.schemas.question import QuestionIn
 
 
@@ -11,8 +12,9 @@ class QuestionService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create_question(self, question_in: QuestionIn):
+    async def create_question(self, question_in: QuestionIn, user: User):
         create_question = Question(**question_in.model_dump())
+        create_question.author_id = user.id
 
         self.db.add(create_question)
         await self.db.commit()

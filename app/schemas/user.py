@@ -8,6 +8,9 @@ class UserBase(BaseModel):
     username: str
     email: EmailStr
 
+class UserOrm(UserBase):
+    id: int
+
 class UserIn(UserBase):
     password1: str
     password2: str

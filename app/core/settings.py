@@ -18,8 +18,8 @@ APP_DESCRIPTION = "JumpToFastAPI_Svelte을 재현한 프로젝트"
 
 PRESENT_DIR = os.path.dirname(os.path.abspath(__file__))
 APP_DIR = Path(__file__).resolve().parent.parent
-print("APP_DIR: ", APP_DIR)
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent  ## root폴더
+print("APP_DIR: ", APP_DIR)
 print("ROOT_DIR: ", ROOT_DIR)
 
 ENV_PATH = os.path.join(ROOT_DIR, ".env")

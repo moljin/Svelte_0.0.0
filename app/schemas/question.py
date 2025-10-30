@@ -4,6 +4,7 @@ from pydantic import BaseModel, field_validator, ConfigDict
 from pydantic_core import PydanticCustomError
 
 from app.schemas.answer import AnswerOut
+from app.schemas.user import UserOrm
 
 
 class QuestionIn(BaseModel):
@@ -27,6 +28,7 @@ class QuestionOut(BaseModel):
     created_at: datetime
     updated_at: datetime
     answers_all: list[AnswerOut] = []
+    author: UserOrm | None
     model_config = ConfigDict(from_attributes=True)
 
 class QuestionList(BaseModel):

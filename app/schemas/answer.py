@@ -3,6 +3,8 @@ from datetime import datetime
 from pydantic import BaseModel, field_validator, ConfigDict
 from pydantic_core import PydanticCustomError
 
+from app.schemas.user import UserOrm
+
 
 class AnswerIn(BaseModel):
     content: str
@@ -23,6 +25,7 @@ class AnswerOut(BaseModel):
     content: str | None = None
     created_at: datetime
     updated_at: datetime
+    author: UserOrm | None
     model_config = ConfigDict(from_attributes=True)
 
     """

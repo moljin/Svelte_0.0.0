@@ -6,7 +6,7 @@
 
     import fastapi from "../lib/api"
     import {link} from 'svelte-spa-router'
-    import {page} from "../lib/store"
+    import {page, is_login} from "../lib/store"
 
     import moment from 'moment/min/moment-with-locales'
     moment.locale('ko')
@@ -61,17 +61,18 @@
     <div class="container my-3">
         <table class="table">
             <thead>
-            <tr class="table-dark">
+            <tr class="text-center table-dark">
                 <th>번호</th>
-                <th>제목</th>
+                <th style="width:50%">제목</th>
+                <th>글쓴이</th>
                 <th>작성일시</th>
             </tr>
             </thead>
             <tbody>
             {#each question_list as question, i}
-                <tr>
+                <tr class="text-center">
                     <td>{ total - ($page * size) - i }: {question.id}</td>
-                    <td>
+                    <td class="text-start">
                         <a use:link href="/detail/{question.id}">{question.subject}</a>
                         <!--
                         {#if question.answers_all.length > 0 }
@@ -87,6 +88,9 @@
                             <span class="text-danger small mx-2">{question.answers_all?.length}</span>
                         {/if}
 
+                    </td>
+                    <td>
+                        { question.author ? question.author.username : "" }
                     </td>
                     <td>{moment.utc(question.created_at).local().format('YYYY-MM-DD HH:mm')}</td>
                 </tr>
@@ -120,7 +124,7 @@
     </ul>
     <!-- 페이징처리 끝 -->
 
-    <p class="text-end"><a use:link href="/question-post" class="btn btn-primary">질문 등록하기</a></p>
+    <p class="text-end"><a use:link href="/question-post" class="btn btn-primary {$is_login ? '' : 'disabled'}">질문 등록하기</a></p>
 
     <p class="text-center">
         Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
