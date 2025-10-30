@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.apis import question, answer
+from app.apis import question, answer, user, auth
 from app.core.config import get_config, DevelopmentConfig
 from app.core.database import ASYNC_ENGINE
 from app.core.settings import ORIGINS
@@ -28,6 +28,9 @@ def including_router(app):
     app.include_router(root.router, prefix="", tags=["Root"]) # root 페이지는 / 슬래시를 없애라.
     app.include_router(question.router, prefix="/apis/questions", tags=["Question"])
     app.include_router(answer.router, prefix="/apis/answers", tags=["Answer"])
+
+    app.include_router(user.router, prefix="/apis/accounts", tags=["User"])
+    app.include_router(auth.router, prefix="/apis/auth", tags=["Auth"])
 
 
 def including_middleware(app):

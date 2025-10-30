@@ -17,10 +17,18 @@
 // PyCharm 설정: Settings > Languages & Frameworks > JavaScript > Code Quality Tools > JSHint에서
 // Use config file 을 체크한다.
 
+import qs from "qs";
+
 const fastapi = (operation, url, params, success_callback, failure_callback) => {
     let method = operation;
     let content_type = 'application/json';
     let body = JSON.stringify(params);
+
+    if(operation === 'login') {
+        method = 'post';
+        content_type = 'application/x-www-form-urlencoded';
+        body = qs.stringify(params);
+    }
 
     let _url = import.meta.env.VITE_SERVER_URL+url;
 

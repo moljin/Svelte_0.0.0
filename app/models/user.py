@@ -14,7 +14,6 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(20), unique=True, index=True, nullable=False)
     email: Mapped[str] = mapped_column(String(100), unique=True, index=True, nullable=False)
     password: Mapped[str] = mapped_column(String(100), nullable=False)
-    img_path: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
 
     created_at: Mapped[str] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     updated_at: Mapped[str] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
