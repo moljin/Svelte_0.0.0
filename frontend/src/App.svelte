@@ -4,6 +4,8 @@
     import Detail from "./routes/Detail.svelte"
     import QuestionCreate from "./routes/QuestionCreate.svelte"
 
+    import Navigation from "./components/Navigation.svelte"
+
     const routes = {
         '/': Home,
         '/detail/:question_id': Detail,
@@ -11,4 +13,5 @@
     }
 </script>
 
+<Navigation />
 <Router {routes}/>

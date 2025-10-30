@@ -1,5 +1,5 @@
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -20,11 +20,24 @@ class QuestionService:
 
         return create_question
 
-    async def get_questions(self):
-        query = (select(Question).order_by(Question.created_at.desc()))
+    async def get_questions(self, skip: int = 0, limit: int = 10):
+        # 1) 전체 건수
+        total = await self.db.scalar(
+            select(func.count(Question.id))
+        )
+        total = total or 0
+
+        # 2) 페이징 목록
+        query = (
+            select(Question)
+            .order_by(Question.created_at.desc())
+            .offset(skip)
+            .limit(limit)
+        )
         result = await self.db.execute(query)
-        created_desc_questions = result.scalars().all()
-        return created_desc_questions
+        question_list = result.scalars().all()
+
+        return total, question_list  # (전체 건수, 페이징 적용된 질문 목록)
 
     async def get_question(self, question_id: int):
         query = (select(Question).where(Question.id == question_id))

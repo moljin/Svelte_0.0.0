@@ -29,6 +29,10 @@ class QuestionOut(BaseModel):
     answers_all: list[AnswerOut] = []
     model_config = ConfigDict(from_attributes=True)
 
+class QuestionList(BaseModel):
+    total: int = 0
+    question_list: list[QuestionOut] = []
+
     '''
     Answer 모델은 Question 모델과 answers_all 라는 이름으로 연결되어 있다. 
     Answer 모델에 Queston 모델을 연결할 때 backref="answers_all" 속성을 지정했기 때문이다. 
