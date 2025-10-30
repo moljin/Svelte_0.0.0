@@ -14,6 +14,15 @@ class Question(Base):
     subject: Mapped[str] = mapped_column(String(100), nullable=False) # String은 제한 글자수를 지정해야 한다.
     content: Mapped[str] = mapped_column(Text, nullable=False)
 
+    # users.id에서 users는 테이블명
+    # 외래키를 사용할 때, 제약 조건에 name을 ForeignKey 안에 ForeignKey("users.id", name="fk_author_id") 이렇게 넣어라.
+    author_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", name="question_author_id", ondelete='CASCADE'), nullable=True)
+    # author_id가 nullable=True 이므로 Optional["User"]가 일관됩니다.
+    author: Mapped["User"] = relationship("User", backref=backref("question_users",
+                                                                  lazy="selectin",
+                                                                  cascade="all, delete-orphan",
+                                                                  passive_deletes=True), lazy="selectin")
+
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
@@ -35,12 +44,22 @@ class Answer(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
+    # users.id에서 users는 테이블명
+    # 외래키를 사용할 때, 제약 조건에 name을 ForeignKey 안에 ForeignKey("users.id", name="fk_author_id") 이렇게 넣어라.
+    author_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", name="answer_author_id", ondelete='CASCADE'), nullable=True)
+    # author_id가 nullable=True 이므로 Optional["User"]가 일관됩니다.
+    author: Mapped["User"] = relationship("User", backref=backref("answer_users",
+                                                                  lazy="selectin",
+                                                                  cascade="all, delete-orphan",
+                                                                  passive_deletes=True), lazy="selectin")
+
     question_id: Mapped[int] = mapped_column(Integer, ForeignKey("questions.id", name="fk_question_id", ondelete='CASCADE'), nullable=False)
     # author_id가 nullable=True 이므로 Optional["User"]가 일관됩니다.
     question: Mapped["Question"] = relationship("Question", backref=backref("answers_all",
                                                                   lazy="selectin",
                                                                   cascade="all, delete-orphan",
                                                                   passive_deletes=True), lazy="selectin")
+
     '''
     question 속성은 답변 모델에서 질문 모델을 참조하기 위해 추가했다. 
     위와 같이 relationship으로 question 속성을 생성하면 답변 객체(예: answer)에서 연결된 질문의 제목을 answer.question.subject 처럼 참조할 수 있다.

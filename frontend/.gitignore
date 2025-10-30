@@ -25,6 +25,9 @@ dist-ssr
 
 # 추가
 # frontend/src/lib은 무시하지 않도록 예외 처리
+!/frontend/
+!/frontend/src/
 !frontend/src/lib/
 !frontend/src/lib/**
+!frontend/src/lib/store.js
 
