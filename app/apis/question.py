@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.dependencies.auth import get_current_user
 from app.models.user import User
 from app.schemas import question as schema_question
+from app.schemas.question import QuestionOut
 from app.services.question_service import QuestionService, get_question_service
 
 router = APIRouter()
@@ -37,7 +38,7 @@ async def question_all(question_service: QuestionService = Depends(get_question_
     }
 
 
-@router.get("/detail/{question_id}")
+@router.get("/detail/{question_id}", response_model=QuestionOut)
 async def get_question(question_id: int,
                       question_service: QuestionService = Depends(get_question_service)):
     question = await question_service.get_question(question_id)

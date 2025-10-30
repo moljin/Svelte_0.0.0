@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, field_validator, ConfigDict
 from pydantic_core import PydanticCustomError
@@ -25,7 +26,7 @@ class AnswerOut(BaseModel):
     content: str | None = None
     created_at: datetime
     updated_at: datetime
-    author: UserOrm | None
+    author: Optional[UserOrm] = None
     model_config = ConfigDict(from_attributes=True)
 
     """
