@@ -1,6 +1,9 @@
 from datetime import datetime
 
 from pydantic import BaseModel, field_validator, ConfigDict
+from pydantic_core import PydanticCustomError
+
+from app.schemas.answer import AnswerOut
 
 
 class QuestionIn(BaseModel):
@@ -10,7 +13,10 @@ class QuestionIn(BaseModel):
     @field_validator('subject', 'content')
     def not_empty(cls, v):
         if not v or not v.strip():
-            raise ValueError('빈 값은 허용되지 않습니다.')
+            # 'msg': 'Value error, 빈 값은 허용되지 않습니다.' 이렇게 프론트로 넘어간다.
+            # raise ValueError('빈 값은 허용되지 않습니다.')
+            # 접두사 없이 메시지 그대로 내려감
+            raise PydanticCustomError('empty_value', '빈 값은 허용되지 않습니다.')
         return v
 
 
@@ -20,7 +26,15 @@ class QuestionOut(BaseModel):
     content: str | None = None
     created_at: datetime
     updated_at: datetime
+    answers_all: list[AnswerOut] = []
     model_config = ConfigDict(from_attributes=True)
+
+    '''
+    Answer 모델은 Question 모델과 answers_all 라는 이름으로 연결되어 있다. 
+    Answer 모델에 Queston 모델을 연결할 때 backref="answers_all" 속성을 지정했기 때문이다. 
+    따라서 Question 스키마에도 answers_all 이라는 이름의 속성을 사용해야 등록된 답변들이 정확하게 매핑된다. 
+    만약 answers_all 대신 다른 이름을 사용한다면 값이 채워지지 않을 것이다.
+    '''
 
     """
     - model_config = ConfigDict(from_attributes=True)의 의미
