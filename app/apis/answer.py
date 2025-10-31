@@ -80,3 +80,15 @@ async def delete_answer(answer_id: int,
         )
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post("/vote/{answer_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def answer_vote(answer_id: int,
+                answer_service: AnswerService = Depends(get_answer_service),
+                current_user: User = Depends(get_current_user)):
+    answer = await answer_service.get_answer(answer_id)
+    if not answer:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="데이터를 찾을수 없습니다.")
+    await answer_service.vote_answer(answer_id, current_user)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

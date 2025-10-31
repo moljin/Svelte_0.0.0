@@ -1,10 +1,10 @@
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.models.qua import Answer, Question
-from app.models.user import User
+from app.models.user import User, answer_voter
 from app.schemas.answer import AnswerIn
 
 
@@ -48,6 +48,34 @@ class AnswerService:
             return False
         await self.db.delete(answer)
         await self.db.commit()
+        return True
+
+    async def vote_answer(self, answer_id: int, user: User):
+        answer = await self.get_answer(answer_id)
+        if answer is None:
+            return None
+        if answer.author_id == user.id:
+            return False
+            # 2) 이미 투표했는지 확인
+        exists = await self.db.execute(
+            select(answer_voter.c.user_id).where(
+                and_(answer_voter.c.answer_id == answer_id,
+                     answer_voter.c.user_id == user.id)
+            )
+        )
+        if exists.scalar_one_or_none() is not None:
+            # 이미 투표했다면 아무 것도 하지 않음(또는 에러 반환)
+            return None
+
+        # 3) 직접 연결 테이블에 insert (관계 접근 없음 -> MissingGreenlet 회피)
+        await self.db.execute(
+            answer_voter.insert().values(
+                answer_id=answer_id,
+                user_id=user.id,
+            )
+        )
+        await self.db.commit()
+        await self.db.refresh(answer)
         return True
 
 def get_answer_service(db: AsyncSession = Depends(get_db)) -> 'AnswerService':

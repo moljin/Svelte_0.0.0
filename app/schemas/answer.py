@@ -28,6 +28,7 @@ class AnswerOut(BaseModel):
     updated_at: datetime
     author: Optional[UserOrm] = None
     question_id: int
+    voter: list[UserOrm] = []
     model_config = ConfigDict(from_attributes=True)
 
     """

@@ -30,6 +30,7 @@ class QuestionOut(BaseModel):
     updated_at: datetime
     answers_all: list[AnswerOut] = []
     author: Optional[UserOrm] = None
+    voter: list[UserOrm] = []
     model_config = ConfigDict(from_attributes=True)
 
 class QuestionList(BaseModel):

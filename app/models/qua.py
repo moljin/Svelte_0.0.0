@@ -5,6 +5,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship, backref, Mapped, mapped_column
 
 from app.core.database import Base
+from app.models.user import question_voter, answer_voter
 
 
 class Question(Base):
@@ -14,6 +15,9 @@ class Question(Base):
     subject: Mapped[str] = mapped_column(String(100), nullable=False) # String은 제한 글자수를 지정해야 한다.
     content: Mapped[str] = mapped_column(Text, nullable=False)
 
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
     # users.id에서 users는 테이블명
     # 외래키를 사용할 때, 제약 조건에 name을 ForeignKey 안에 ForeignKey("users.id", name="fk_author_id") 이렇게 넣어라.
     author_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", name="question_author_id", ondelete='CASCADE'), nullable=True)
@@ -22,9 +26,8 @@ class Question(Base):
                                                                   lazy="selectin",
                                                                   cascade="all, delete-orphan",
                                                                   passive_deletes=True), lazy="selectin")
-
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    # 1. 모델 관계에 비동기에서는 lazy='selectin' 기본 적용 안그러면 빙글빙글 돈다.
+    voter = relationship('User', secondary=question_voter, backref='question_voters', lazy="selectin") # 1. 모델 관계에 lazy='selectin' 기본 적용 안그러면 빙글빙글 돈다.
 
 """
     id = Column(Integer, primary_key=True)
@@ -59,6 +62,8 @@ class Answer(Base):
                                                                   lazy="selectin",
                                                                   cascade="all, delete-orphan",
                                                                   passive_deletes=True), lazy="selectin")
+    # 1. 모델 관계에 비동기에서는 lazy='selectin' 기본 적용 안그러면 빙글빙글 돈다.
+    voter = relationship('User', secondary=answer_voter, backref='answer_voters', lazy="selectin")
 
     '''
     question 속성은 답변 모델에서 질문 모델을 참조하기 위해 추가했다. 
