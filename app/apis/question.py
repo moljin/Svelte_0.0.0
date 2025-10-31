@@ -48,3 +48,54 @@ async def get_question(question_id: int,
             detail="해당 게시글을 찾을 수 없습니다."
         )
     return question
+
+
+@router.put("/update/{question_id}",
+            response_model=schema_question.QuestionOut,
+            # 각 answer의 question 필드를 제외하여 순환 제거
+            response_model_exclude={'answers_all': {'__all__': {'question'}}},
+            )
+async def update_question(question_id: int,
+                          question_in: schema_question.QuestionIn,
+                          question_service: QuestionService = Depends(get_question_service),
+                          current_user: User = Depends(get_current_user)):
+    """ Swagger Docs 에서
+        RecursionError: maximum recursion depth exceeded 에러 발생하여 아래처럼 수정했다.
+            - 빠르게 우회(스키마 변경 없이): 응답에서 역참조 제외
+            - update 응답에서 answers_all 안의 question 필드를 제외
+
+            response_model=schema_question.QuestionOut,
+            # 각 answer의 question 필드를 제외하여 순환 제거
+            response_model_exclude={'answers_all': {'__all__': {'question'}}},
+    """
+    question = await question_service.update_question(question_id, question_in, current_user)
+    if question is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="질문 데이터를 찾을 수 없습니다."
+        )
+    if question is False:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Not authorized: 접근 권한이 없습니다."
+        )
+    return question
+
+
+@router.delete("/delete/{question_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_question(question_id: int,
+                         question_service: QuestionService = Depends(get_question_service),
+                         current_user: User = Depends(get_current_user)):
+    question = await question_service.delete_question(question_id, current_user)
+    if question is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="게시글을 찾을 수 없습니다."
+        )
+    if question is False:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized: 접근 권한이 없습니다."
+        )
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

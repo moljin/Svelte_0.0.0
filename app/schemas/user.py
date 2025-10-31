@@ -10,6 +10,7 @@ class UserBase(BaseModel):
 
 class UserOrm(UserBase):
     id: int
+    model_config = ConfigDict(from_attributes=True)
 
 class UserIn(UserBase):
     password1: str

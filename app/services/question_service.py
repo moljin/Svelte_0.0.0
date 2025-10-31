@@ -47,5 +47,27 @@ class QuestionService:
         question = result.scalar_one_or_none()
         return question
 
+    async def update_question(self, question_id: int, question_in: QuestionIn, user: User):
+        question = await self.get_question(question_id)
+        if question is None:
+            return None
+        if question.author_id != user.id:
+            return False
+        question.subject = question_in.subject
+        question.content = question_in.content
+        await self.db.commit()
+        await self.db.refresh(question)
+        return question
+
+    async def delete_question(self, question_id: int, user: User):
+        question = await self.get_question(question_id)
+        if question is None:
+            return None
+        if question.author_id != user.id:
+            return False
+        await self.db.delete(question)
+        await self.db.commit()
+        return True
+
 def get_question_service(db: AsyncSession = Depends(get_db)) -> 'QuestionService':
     return QuestionService(db)

@@ -5,6 +5,8 @@
     import QuestionCreate from "./routes/QuestionCreate.svelte"
     import UserRegister from "./routes/UserRegister.svelte"
     import UserLogin from "./routes/UserLogin.svelte"
+    import QuestionUpdate from "./routes/QuestionUpdate.svelte"
+    import AnswerUpdate from "./routes/AnswerUpdate.svelte"
 
     import Navigation from "./components/Navigation.svelte"
 
@@ -14,6 +16,8 @@
         '/question-post': QuestionCreate,
         '/user-register': UserRegister,
         '/user-login': UserLogin,
+        '/question-update/:question_id': QuestionUpdate,
+        '/answer-update/:answer_id': AnswerUpdate,
     }
 </script>
 

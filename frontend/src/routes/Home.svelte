@@ -133,6 +133,11 @@
     <div class="text-center">
         <Counter/>
     </div>
+    <br>
+
+    <p class="text-center">
+        본 사이트는 <a href="https://wikidocs.net/book/8531" target="_blank" rel="noreferrer">JumpToFastAPI</a>(FastAPI: 백엔드, Svelte: 프론트엔드)를 참고하여 개발했다. By DogField
+    </p>
 
     <hr>
     <p class="text-center">

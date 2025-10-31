@@ -27,6 +27,7 @@ class AnswerOut(BaseModel):
     created_at: datetime
     updated_at: datetime
     author: Optional[UserOrm] = None
+    question_id: int
     model_config = ConfigDict(from_attributes=True)
 
     """
