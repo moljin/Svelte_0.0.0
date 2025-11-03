@@ -76,13 +76,13 @@ class QuestionService:
         if question.author_id == user.id:
             return False
         # 2) 이미 투표했는지 확인
-        exists = await self.db.execute(
-            select(question_voter.c.user_id).where(
+        query = select(question_voter.c.user_id).where(
                 and_(question_voter.c.question_id == question_id,
                 question_voter.c.user_id == user.id)
             )
-        )
-        if exists.scalar_one_or_none() is not None:
+        result = await self.db.execute(query)
+        exists = result.scalar_one_or_none()
+        if exists is not None:
             # 이미 투표했다면 아무 것도 하지 않음(또는 에러 반환)
             return None
 

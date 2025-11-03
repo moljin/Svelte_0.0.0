@@ -47,11 +47,11 @@
 
 <main class="container">
     <div class="text-center">
-        <a href="https://fastapi.tiangolo.com/" target="_blank" rel="noreferrer">
-            <img style="width: 275px; height: 100px" src={fastapiLogo} class="logo" alt="Vite Logo"/>
-        </a>
         <a href="https://vite.dev" target="_blank" rel="noreferrer">
             <img src={viteLogo} class="logo" alt="Vite Logo"/>
+        </a>
+        <a href="https://fastapi.tiangolo.com/" target="_blank" rel="noreferrer">
+            <img style="width: 275px; height: 100px" src={fastapiLogo} class="logo" alt="Vite Logo"/>
         </a>
         <a href="https://svelte.dev" target="_blank" rel="noreferrer">
             <img src={svelteLogo} class="logo" alt="Svelte Logo"/>

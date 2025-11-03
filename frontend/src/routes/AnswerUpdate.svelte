@@ -2,6 +2,7 @@
     import fastapi from "../lib/api"
     import Error from "../components/Error.svelte"
     import { push } from 'svelte-spa-router'
+    import QuillEditor from "../components/QuillEditor.svelte";
 
     export let params = {}
     const answer_id = params.answer_id
@@ -40,6 +41,12 @@
         <div class="mb-3">
             <label for="content">내용</label>
             <textarea class="form-control" rows="10" bind:value="{content}"></textarea>
+            <hr>
+            <!-- Quill 에디터를 넣을 DIV -->
+            <div id="quill-container" class="">
+                <div id="drop-area"></div>
+                <QuillEditor/>
+            </div>
         </div>
         <button class="btn btn-primary" on:click="{update_answer}">수정하기</button>
     </form>

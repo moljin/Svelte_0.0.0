@@ -22,6 +22,20 @@
 
     get_question()
 
+    // quill 저장내용 태그 없애기 (DOMParser 사용)
+    function toPlainTextFromHtml(html) {
+        if (typeof window === 'undefined' || typeof DOMParser === 'undefined') return html ?? '';
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html ?? '', 'text/html');
+        const text = (doc.body && doc.body.textContent) ? doc.body.textContent : '';
+        // 필요 시 nbsp를 일반 공백으로 정리
+        return text.replaceAll('\u00A0', ' ');
+    }
+
+    // question.content 변경 시 평문으로 계산
+    $: plainQuestionContent = toPlainTextFromHtml(question?.content ?? '');
+
+
     function post_answer(event) {
         event.preventDefault()
         let url = "/apis/answers/post/" + question_id
@@ -115,7 +129,9 @@
     <h2 class="border-bottom py-2">{question.subject}</h2>
     <div class="card my-3">
         <div class="card-body">
-            <div class="card-text" style="white-space: pre-line;">{question.content}</div>
+<!--            <div class="card-text" style="white-space: pre-line;">{question.content}</div>-->
+            <div class="card-text" style="white-space: pre-line;">{plainQuestionContent}</div>
+
             <div class="d-flex justify-content-end">
                 {#if question.updated_at }
                 <div class="badge bg-light text-dark p-2 text-start mx-3">
