@@ -355,15 +355,15 @@
     }
 
    :global(.ql-code-block-container) {
-     white-space: pre;
-    background-color: #23241f;
-    color: #f8f8f2;
-    overflow: visible;
-     margin-bottom: 5px;
-    margin-top: 5px;
-    padding: 10px 10px;
-     border-radius: 6px;
-}
+       white-space: pre;
+       background-color: #23241f;
+       color: #f8f8f2;
+       overflow: visible;
+       margin-bottom: 5px;
+       margin-top: 5px;
+       padding: 10px 10px;
+       border-radius: 6px;
+   }
 </style>
 
 <div class="container my-3">
@@ -372,7 +372,8 @@
     <div class="card my-3">
         <div class="card-body">
             <!-- sanitized HTML을 렌더링
-            ql-editor class를 넣고,  import 'quill/dist/quill.snow.css'; // Quill 스노우 테마 CSS을 넣으면, 에디터 형식이 유지된다.-->
+            ql-editor class를 넣고,  import 'quill/dist/quill.snow.css';
+            // Quill 스노우 테마 CSS을 넣으면, 에디터 형식이 유지된다.-->
             <div class="card-text post-container ql-editor">
                 {@html question.content_sanitized || ""}
             </div>

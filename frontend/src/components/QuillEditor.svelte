@@ -135,6 +135,7 @@
             [{'header': 1}, {'header': 2}, {'header': 3}],               // 제목 크기
 
             [{'list': 'ordered'}, {'list': 'bullet'}, {'list': 'check'}, {'indent': '-1'}, {'indent': '+1'}],
+            [{'color': []}, {'background': []}, {'align': []}],          // 폰트 색상/배경 색상
             ['blockquote', 'code-block'],
             [{'script': 'sub'}, {'script': 'super'}],          // 들여쓰기/내어쓰기
             [{'direction': 'rtl'}],                         // 텍스트 방향
@@ -142,7 +143,7 @@
             // [{'size': ['small', false, 'large', 'huge']}],  // 폰트 크기
             // [{'header': [1, 2, 3, 4, 5, 6, false]}],
 
-            [{'color': []}, {'background': []}, {'align': []}],          // 폰트 색상/배경 색상
+
             // [{'font': []}],
 
             // [{'align': []}],                                // 텍스트 정렬
@@ -183,7 +184,7 @@
                 { maxWidth: 510, visible: 2 },
                 { maxWidth: 710, visible: 3 },
                 { maxWidth: 770, visible: 3 },
-                { maxWidth: 995, visible: 5 },
+                { maxWidth: 995, visible: 4 },
                 { maxWidth: 1030, visible: 6 },
                 { maxWidth: Infinity, visible: 999 } // wide screens show all
             ]
@@ -236,7 +237,8 @@
     /* 기존: height: 50px; => 드롭다운이 가려질 수 있음 */
     :global(.ql-toolbar) {
         height: auto; /* 고정 높이 제거 */
-        min-height: 50px; /* 필요 시 최소 높이만 유지 */
+        min-height: 55px; /* 필요 시 최소 높이만 유지 */
+        border-radius: 10px 10px 0 0;
     }
 
     :global(.ql-toolbar.ql-snow) {
@@ -247,6 +249,12 @@
         position: relative; /* 드롭다운의 스택 컨텍스트 보강 */
         z-index: 1; /* 드롭다운의 스택 컨텍스트 보강 */
 
+    }
+    :global(.ql-toolbar.ql-snow .ql-formats) {
+        margin-right: 8px;
+    }
+    :global(.ql-snow .ql-picker.ql-expanded .ql-picker-options) {
+        top: 105%;
     }
 
     :global(.ql-toolbar .ql-toolbar-main) {
