@@ -154,7 +154,8 @@
             modules: {
                 toolbar: toolbarOptions
             },
-            theme: 'snow' // 스노우 테마 사용
+            theme: 'snow', // 스노우 테마 사용
+            placeholder: '여기에 내용을 입력하세요...',
         });
 
         // 게시글 수정 화면에서 저장되어 있던 내용(content) 반영
