@@ -135,7 +135,6 @@
             [{'header': 1}, {'header': 2}, {'header': 3}],               // 제목 크기
 
             [{'list': 'ordered'}, {'list': 'bullet'}, {'list': 'check'}, {'indent': '-1'}, {'indent': '+1'}],
-            [{'color': []}, {'background': []}, {'align': []}],          // 폰트 색상/배경 색상
             ['blockquote', 'code-block'],
             [{'script': 'sub'}, {'script': 'super'}],          // 들여쓰기/내어쓰기
             [{'direction': 'rtl'}],                         // 텍스트 방향
@@ -143,6 +142,7 @@
             // [{'size': ['small', false, 'large', 'huge']}],  // 폰트 크기
             // [{'header': [1, 2, 3, 4, 5, 6, false]}],
 
+            [{'color': []}, {'background': []}, {'align': []}],          // 폰트 색상/배경 색상
             // [{'font': []}],
 
             // [{'align': []}],                                // 텍스트 정렬
@@ -154,8 +154,7 @@
             modules: {
                 toolbar: toolbarOptions
             },
-            theme: 'snow', // 스노우 테마 사용
-            placeholder: '여기에 내용을 입력하세요...',
+            theme: 'snow' // 스노우 테마 사용
         });
 
         // 게시글 수정 화면에서 저장되어 있던 내용(content) 반영
@@ -184,8 +183,8 @@
                 { maxWidth: 510, visible: 2 },
                 { maxWidth: 710, visible: 3 },
                 { maxWidth: 770, visible: 3 },
-                { maxWidth: 995, visible: 4 },
-                { maxWidth: 1200, visible: 6 },
+                { maxWidth: 995, visible: 5 },
+                { maxWidth: 1030, visible: 6 },
                 { maxWidth: Infinity, visible: 999 } // wide screens show all
             ]
         });
@@ -230,6 +229,9 @@
             overflow: auto;
             font-size: 16px; /*detail page와 동일하게 맞춤 (글씨 크기, 줄간격, 단락 간격(margin-top, margin-bottom))*/
         }
+    :global(.ql-editor) {
+       line-height: 1.8;
+    }
     /* Minimal styling for the responsive toolbar wrappers */
     /* 기존: height: 50px; => 드롭다운이 가려질 수 있음 */
     :global(.ql-toolbar) {
@@ -240,7 +242,7 @@
     :global(.ql-toolbar.ql-snow) {
         display: flex;
         align-items: center;
-        /*gap: 8px;*/
+        gap: 8px;
         flex-wrap: nowrap;
         position: relative; /* 드롭다운의 스택 컨텍스트 보강 */
         z-index: 1; /* 드롭다운의 스택 컨텍스트 보강 */
@@ -309,7 +311,7 @@
   :global(.ql-toolbar.ql-snow .ql-formats button svg),
   :global(.ql-toolbar.ql-snow .ql-picker-label svg),
   :global(.ql-toolbar.ql-snow .ql-picker-item svg) {
-    transform: scale(1.4);
+    transform: scale(1.3);
     transform-origin: center;
   }
 
@@ -324,12 +326,11 @@
     :global(button.ql-header > svg > path),
     :global(button.ql-script > svg > path)  {stroke:white; stroke-width: 0.5}
     :global(.ql-toolbar-more button) {font-size: 25px !important;}
-    /*:global(.ql-toolbar-main > span:nth-child(1)) {display: flex; gap: 5px;}*/
-    :global(.ql-toolbar-main > span:nth-child(2)),
-    :global(.ql-toolbar-main > span:nth-child(3)),
-    :global(.ql-toolbar-main > span:nth-child(4)),
-    :global(.ql-toolbar-main > span:nth-child(5)),
-    :global(.ql-toolbar-main > span:nth-child(6)),
-    :global(.ql-toolbar-main > span:nth-child(7)) {display: flex; gap: 8px;}
+    :global(.ql-toolbar-main > span:nth-child(2)) {display: flex; gap: 5px;}
+    :global(.ql-toolbar-main > span:nth-child(3)) {display: flex; gap: 5px;}
+    :global(.ql-toolbar-main > span:nth-child(4)) {display: flex; gap: 5px;}
+    :global(.ql-toolbar-main > span:nth-child(5)) {display: flex; gap: 5px;}
+    :global(.ql-toolbar-main > span:nth-child(6)) {display: flex; gap: 5px;}
+    :global(.ql-toolbar-main > span:nth-child(8)) {display: flex; gap: 5px;}
 
 </style>

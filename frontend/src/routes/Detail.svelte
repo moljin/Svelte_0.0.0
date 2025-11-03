@@ -202,6 +202,7 @@
     import Error from "../components/Error.svelte"
     import { link, push } from 'svelte-spa-router'
     import { is_login, username } from "../lib/store"
+    import 'quill/dist/quill.snow.css'; // Quill 스노우 테마 CSS
 
     import moment from 'moment/min/moment-with-locales'
     moment.locale('ko')
@@ -338,16 +339,20 @@
 
 
 <style>
-  .post-container img {
+  :global(.post-container img) {
     max-width: 100%;
     height: auto;
     display: block;
   }
-  .post-container video {
+  :global(.post-container video) {
     max-width: 100%;
     height: auto;
     display: block;
   }
+
+  :global(.ql-editor) {
+       line-height: 1.8;
+    }
 
    :global(.ql-code-block-container) {
      white-space: pre;
@@ -366,8 +371,9 @@
     <h2 class="border-bottom py-2">{question.subject}</h2>
     <div class="card my-3">
         <div class="card-body">
-            <!-- sanitized HTML을 렌더링 -->
-            <div class="card-text post-container">
+            <!-- sanitized HTML을 렌더링
+            ql-editor class를 넣고,  import 'quill/dist/quill.snow.css'; // Quill 스노우 테마 CSS을 넣으면, 에디터 형식이 유지된다.-->
+            <div class="card-text post-container ql-editor">
                 {@html question.content_sanitized || ""}
             </div>
 
