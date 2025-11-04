@@ -1,9 +1,10 @@
 from fastapi import Depends
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, func, and_, or_
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import aliased
 
 from app.core.database import get_db
-from app.models.qua import Question
+from app.models.qua import Question, Answer
 from app.models.user import User, question_voter
 from app.schemas.question import QuestionIn
 
@@ -22,7 +23,8 @@ class QuestionService:
 
         return create_question
 
-    async def get_questions(self, skip: int = 0, limit: int = 10):
+    async def get_questions(self, skip: int = 0, limit: int = 10, keyword: str | None = None):
+        '''
         # 1) 전체 건수
         total = await self.db.scalar(
             select(func.count(Question.id))
@@ -37,6 +39,66 @@ class QuestionService:
             .limit(limit)
         )
         result = await self.db.execute(query)
+        question_list = result.scalars().all()
+        '''
+
+        # 별칭: 답변 작성자
+        _AnswerAuthor = aliased(User)
+
+        # 공통: FROM Question
+        base_select = select(Question)
+        count_select = select(func.count(func.distinct(Question.id))).select_from(Question)
+
+        if keyword:
+            pattern = f"%{keyword.strip()}%"
+
+            # 질문 작성자 / 답변 / 답변 작성자 조인
+            base_select = (
+                base_select
+                .outerjoin(User, User.id == Question.author_id)
+                .outerjoin(Answer, Answer.question_id == Question.id)
+                .outerjoin(_AnswerAuthor, Answer.author.of_type(_AnswerAuthor))
+                .where(
+                    or_(
+                        Question.subject.ilike(pattern),
+                        Question.content.ilike(pattern),
+                        User.username.ilike(pattern),
+                        Answer.content.ilike(pattern),
+                        _AnswerAuthor.username.ilike(pattern),
+                    )
+                )
+            )
+
+            count_select = (
+                count_select
+                .outerjoin(User, User.id == Question.author_id)
+                .outerjoin(Answer, Answer.question_id == Question.id)
+                .outerjoin(_AnswerAuthor, Answer.author.of_type(_AnswerAuthor))
+                .where(
+                    or_(
+                        Question.subject.ilike(pattern),
+                        Question.content.ilike(pattern),
+                        User.username.ilike(pattern),
+                        Answer.content.ilike(pattern),
+                        _AnswerAuthor.username.ilike(pattern),
+                    )
+                )
+            )
+
+        # 1) 전체 건수 (검색 조건 반영)
+        total = await self.db.scalar(count_select)
+        total = total or 0
+
+        # 2) 목록: DISTINCT로 중복 제거 + 최신순 + 페이징
+        list_stmt = (
+            base_select
+            .distinct(Question.id)
+            .order_by(Question.created_at.desc())
+            .offset(skip)
+            .limit(limit)
+        )
+
+        result = await self.db.execute(list_stmt)
         question_list = result.scalars().all()
 
         return total, question_list  # (전체 건수, 페이징 적용된 질문 목록)

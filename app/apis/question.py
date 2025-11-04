@@ -24,8 +24,9 @@ async def question_all(question_service: QuestionService = Depends(get_question_
                        page: int = Query(0, ge=0),
                        size: int = Query(10, gt=0),
                        response: Response = None,
+                       keyword: str | None = None
                        ) -> dict:
-    total, question_list = await question_service.get_questions(skip=page * size, limit=size)
+    total, question_list = await question_service.get_questions(skip=page * size, limit=size, keyword=keyword)
     if question_list is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

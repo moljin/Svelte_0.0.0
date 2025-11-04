@@ -6,7 +6,7 @@
 
     import fastapi from "../lib/api"
     import {link} from 'svelte-spa-router'
-    import {page, is_login} from "../lib/store"
+    import {page, keyword, is_login} from "../lib/store"
 
     import moment from 'moment/min/moment-with-locales'
     moment.locale('ko')
@@ -28,21 +28,40 @@
     let size = 10
     // let page = 0
     let total = 0
+    let kw = ''
     $: total_page = Math.ceil(total / size)
 
-    function get_question_list(_page = 0) {
-        let params = {
-            page: _page,
+    function get_question_list(currentPage, currentKeyword) {
+        const params = {
+            page: currentPage,
             size: size,
-        }
+            keyword: currentKeyword,
+        };
         fastapi('get', '/apis/questions/all', params, (json) => {
-            question_list = json.question_list
-            $page = _page
-            total = json.total
-        })
+            question_list = json.question_list;
+            total = json.total;
+            kw = currentKeyword;
+        });
     }
 
-    $: get_question_list($page)
+    // $page, $keyword가 바뀔 때마다 호출
+    $: get_question_list($page, $keyword);
+
+
+    // function get_question_list(_page = 0) {
+    //     let params = {
+    //         page: _page,
+    //         size: size,
+    //         keyword: kw,
+    //     }
+    //     fastapi('get', '/apis/questions/all', params, (json) => {
+    //         question_list = json.question_list
+    //         $page = _page
+    //         total = json.total
+    //     })
+    // }
+    //
+    // $: get_question_list($page)
 </script>
 
 <main class="container">
@@ -59,6 +78,24 @@
     </div>
 
     <div class="container my-3">
+        <div class="row my-3">
+            <div class="col-6">
+                <a use:link href="/question-post"
+                   class="btn btn-primary {$is_login ? '' : 'disabled'}">질문 등록하기</a>
+            </div>
+            <div class="col-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" bind:value="{kw}">
+<!--                    <button class="btn btn-outline-secondary" on:click={() => get_question_list(0)}>-->
+<!--                        찾기-->
+<!--                    </button>-->
+                    <button class="btn btn-outline-secondary"
+                            on:click={() => { $keyword = kw; $page = 0; }}>찾기
+                    </button>
+
+                </div>
+            </div>
+        </div>
         <table class="table">
             <thead>
             <tr class="text-center table-dark">
@@ -84,10 +121,10 @@
                         이런 경우에 .length에 접근하면 에러가 나거나 조건이 제대로 평가되지 않습니다.
                         안전하게 고치기 아래처럼 안전한 접근으로 바꾸면 됩니다.
                         -->
-                        {#if (question.answers_all?.length ?? 0) > 0}
-                            <span class="text-danger small mx-2">{question.answers_all?.length}</span>
-                        {/if}
-
+                        <span class="text-danger small mx-2">
+                            {#if (question.answers_all?.length ?? 0) > 0}답변: {question.answers_all?.length}{/if}
+                            {#if (question.voter?.length ?? 0) > 0}[추천: {question.voter?.length}]{/if}
+                        </span>
                     </td>
                     <td>
                         { question.author ? question.author.username : "" }
@@ -103,40 +140,43 @@
     <ul class="pagination justify-content-center">
         <!-- 이전페이지 -->
         <li class="page-item {$page <= 0 && 'disabled'}">
-            <button class="page-link" on:click="{() => get_question_list($page-1)}">이전</button>
+<!--            <button class="page-link" on:click="{() => get_question_list($page-1)}">이전</button>-->
+            <button class="page-link" on:click="{() => $page--}">이전</button>
         </li>
         <!-- 페이지번호 -->
         {#each Array(total_page) as _, loop_page}
-
-            <!--{#if loop_page >= $page - 1 && loop_page <= page + 4} -->
+            <!--{#if loop_page >= $page - 1 && loop_page <= page + 4}-->
             <!--페이지가 5개씩 배치되게 하기위해서 0을 넣어서 loop_page >= page (- 0), 4를 넣었다.-->
-            {#if loop_page >= $page && loop_page <= $page + 4}
+            <!--{#if loop_page >= $page && loop_page <= $page + 4}-->
+            {#if loop_page >= $page-5 && loop_page <= $page+5}
                 <li class="page-item {loop_page === $page && 'active'}">
-                    <button on:click="{() => get_question_list(loop_page)}" class="page-link">{loop_page + 1}</button>
+<!--                    <button on:click="{() => get_question_list(loop_page)}" class="page-link">{loop_page + 1}</button>-->
+                    <button on:click="{() => $page = loop_page}" class="page-link">{loop_page+1}</button>
                 </li>
             {/if}
             <!--지금까지 만든 페이징 기능에 '처음'과 '마지막' 링크를 추가하고 '…' 생략 기호까지 추가하면 더 완성도 높은 페이징 기능이 될 것이다.-->
         {/each}
         <!-- 다음페이지 -->
         <li class="page-item {$page >= total_page-1 && 'disabled'}">
-            <button class="page-link" on:click="{() => get_question_list($page+1)}">다음</button>
+<!--            <button class="page-link" on:click="{() => get_question_list($page+1)}">다음</button>-->
+            <button class="page-link" on:click="{() => $page++}">다음</button>
         </li>
     </ul>
     <!-- 페이징처리 끝 -->
 
-    <p class="text-end"><a use:link href="/question-post" class="btn btn-primary {$is_login ? '' : 'disabled'}">질문 등록하기</a></p>
+<!--    <p class="text-end"><a use:link href="/question-post" class="btn btn-primary {$is_login ? '' : 'disabled'}">질문 등록하기</a></p>-->
+
+<!--    <p class="text-center">-->
+<!--        Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!-->
+<!--    </p>-->
+
+<!--    <div class="text-center">-->
+<!--        <Counter/>-->
+<!--    </div>-->
+<!--    <br>-->
 
     <p class="text-center">
-        Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-    </p>
-
-    <div class="text-center">
-        <Counter/>
-    </div>
-    <br>
-
-    <p class="text-center">
-        본 사이트는 <a href="https://wikidocs.net/book/8531" target="_blank" rel="noreferrer">JumpToFastAPI</a>(FastAPI: 백엔드, Svelte: 프론트엔드)를 참고하여 개발했다. By DogField
+        본 사이트는 <a href="https://wikidocs.net/book/8531" target="_blank" rel="noreferrer">JumpToFastAPI</a>(FastAPI: 백엔드, Svelte: 프론트엔드)를 참고하여 개발했다. Powered By DogField
     </p>
 
     <hr>
